@@ -43,7 +43,19 @@ exports.login = async (req, res, next) => {
 };
 
 exports.forgotpassword = (req, res, next) => {
-  res.send("forgot password route");
+  const {email}=req.body;
+  try{
+    const user = await User.findOne((email));
+    if(!user){
+      return next(new ErrorResponce("email not send",404))
+    }
+    const resetToken = user.getResetPasswordToken();
+    await user.save();
+    const resetUrl = `http://localhost:3000/passwordreset/${resetToken}`
+    const message = `<h1>password reset request found</h1>`
+  }catch (error){
+
+  }
 };
 exports.resetpassword = (req, res, next) => {
   res.send("rpassword reset  route");
